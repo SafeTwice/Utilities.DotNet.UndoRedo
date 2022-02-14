@@ -46,10 +46,6 @@ namespace UndoRedoFramework
         //                            PUBLIC METHODS
         //===========================================================================
 
-        /// <summary>
-        /// Executes an action and stores it in the undo queue.
-        /// </summary>
-        /// <param name="action">Action to be executed</param>
         public void Execute( IAction action )
         {
             action.Execute();
@@ -74,9 +70,6 @@ namespace UndoRedoFramework
             UndoRedoStateChanged?.Invoke( this, new() );
         }
 
-        /// <summary>
-        /// Unexecutes the newest action in the undo queue and moves it to the redo queue.
-        /// </summary>
         public void Undo()
         {
             var action = m_undoActions.Last?.Value;
@@ -92,18 +85,11 @@ namespace UndoRedoFramework
             }
         }
 
-        /// <summary>
-        /// Indicates if an action is available to be undone.
-        /// </summary>
-        /// <returns><c>true</c> if an action to be undone is available, <c>false</c> otherwise</returns>
         public bool CanUndo()
         {
             return m_undoActions.Count > 0;
         }
 
-        /// <summary>
-        /// Re-executes the oldest action in the redo queue and moves it to the undo queue.
-        /// </summary>
         public void Redo()
         {
             var action = m_redoActions.Last?.Value;
@@ -119,10 +105,6 @@ namespace UndoRedoFramework
             }
         }
 
-        /// <summary>
-        /// Indicates if an action is available to be redone.
-        /// </summary>
-        /// <returns><c>true</c> if an action to be redone is available, <c>false</c> otherwise</returns>
         public bool CanRedo()
         {
             return m_redoActions.Count > 0;

@@ -7,7 +7,7 @@ using System;
 namespace UndoRedoFramework
 {
     /// <summary>
-    /// Represents an action than can be executed (done/redone) and unexecuted (undone).
+    /// Represents an action than can be executed (done/redone) and un-executed (undone).
     /// </summary>
     public interface IAction
     {
@@ -15,16 +15,34 @@ namespace UndoRedoFramework
         //                              PROPERTIES
         //===========================================================================
 
+        /// <summary>
+        /// Description of the action (or <c>null</c> if no description is available).
+        /// </summary>
         string Description { get; }
 
         //===========================================================================
         //                               METHODS
         //===========================================================================
 
+        /// <summary>
+        /// (Re)Executes an action.
+        /// </summary>
         void Execute();
 
+        /// <summary>
+        /// Un-executes an action (undoes the outcome of its execution).
+        /// </summary>
         void UnExecute();
 
+        /// <summary>
+        /// Tries to merge <paramref name="action"/> with this action if it is possible.
+        /// </summary>
+        /// <remarks>
+        /// This method is called on the last action available for being undone when a new action
+        /// is added to the undo/redo stack.
+        /// </remarks>
+        /// <param name="action">Action to be merged</param>
+        /// <returns><c>true</c> if the action was merged, <c>false</c> otherwise</returns>
         bool TryMerge( IAction action );
     }
 }
