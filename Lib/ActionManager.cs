@@ -9,7 +9,7 @@ namespace UndoRedoFramework
     /// <summary>
     /// Manages actions that can be done and undone.
     /// </summary>
-    public class ActionManager
+    public class ActionManager : IActionManager
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
