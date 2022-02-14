@@ -54,6 +54,11 @@ namespace UndoRedoFramework
         {
             action.Execute();
 
+            Register( action );
+        }
+
+        public void Register( IAction action )
+        {
             if( m_undoActions.Last?.Value.TryMerge( action ) != true )
             {
                 m_undoActions.AddLast( action );
@@ -62,9 +67,9 @@ namespace UndoRedoFramework
                 {
                     m_undoActions.RemoveFirst();
                 }
-
-                m_redoActions.Clear();
             }
+
+            m_redoActions.Clear();
 
             UndoRedoStateChanged?.Invoke( this, new() );
         }
