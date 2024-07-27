@@ -3,6 +3,7 @@
 /// @license    See LICENSE.txt
 
 using System;
+using System.ComponentModel;
 
 namespace UndoRedoFramework
 {
@@ -19,11 +20,16 @@ namespace UndoRedoFramework
 
         public string? RedoActionDescription => m_redoActions.Last?.Value.Description;
 
+        public bool CanUndo => ( m_undoActions.Count > 0 );
+
+        public bool CanRedo => ( m_redoActions.Count > 0 );
+
         //===========================================================================
         //                             PUBLIC EVENTS
         //===========================================================================
 
-        public event EventHandler? UndoRedoStateChanged;
+        public event Action<IActionManager>? UndoRedoStateChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -55,6 +61,8 @@ namespace UndoRedoFramework
 
         public void Register( IAction action )
         {
+            bool currentCanRedo = CanRedo;
+
             if( m_undoActions.Last?.Value.TryMerge( action ) != true )
             {
                 m_undoActions.AddLast( action );
@@ -67,47 +75,55 @@ namespace UndoRedoFramework
 
             m_redoActions.Clear();
 
-            UndoRedoStateChanged?.Invoke( this, new() );
+            InvokeUpdateEvents( currentCanRedo );
         }
 
         public void Undo()
         {
-            var action = m_undoActions.Last?.Value;
+            var actionNode = m_undoActions.Last;
 
-            if( action != null )
+            if( actionNode != null )
             {
-                action.UnExecute();
+                actionNode.Value.UnExecute();
 
-                m_undoActions.RemoveLast();
-                m_redoActions.AddLast( action );
+                m_undoActions.Remove( actionNode );
+                m_redoActions.AddLast( actionNode );
 
-                UndoRedoStateChanged?.Invoke( this, new() );
+                InvokeUpdateEvents( true );
             }
-        }
-
-        public bool CanUndo()
-        {
-            return m_undoActions.Count > 0;
         }
 
         public void Redo()
         {
-            var action = m_redoActions.Last?.Value;
+            var actionNode = m_redoActions.Last;
 
-            if( action != null )
+            if( actionNode != null )
             {
-                action.Execute();
+                actionNode.Value.Execute();
 
-                m_redoActions.RemoveLast();
-                m_undoActions.AddLast( action );
+                m_redoActions.Remove( actionNode );
+                m_undoActions.AddLast( actionNode );
 
-                UndoRedoStateChanged?.Invoke( this, new() );
+                InvokeUpdateEvents( true );
             }
         }
 
-        public bool CanRedo()
+        //===========================================================================
+        //                            PRIVATE METHODS
+        //===========================================================================
+
+        private void InvokeUpdateEvents( bool canRedoUpdated )
         {
-            return m_redoActions.Count > 0;
+            PropertyChanged?.Invoke( this, new( nameof( CanUndo ) ) );
+            PropertyChanged?.Invoke( this, new( nameof( UndoActionDescription ) ) );
+
+            if( canRedoUpdated )
+            {
+                PropertyChanged?.Invoke( this, new( nameof( CanRedo ) ) );
+                PropertyChanged?.Invoke( this, new( nameof( RedoActionDescription ) ) );
+            }
+
+            UndoRedoStateChanged?.Invoke( this );
         }
 
         //===========================================================================

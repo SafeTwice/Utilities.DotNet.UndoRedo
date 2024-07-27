@@ -2,6 +2,7 @@
 /// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
+using System.ComponentModel;
 
 namespace UndoRedoFramework
 {
@@ -9,7 +10,7 @@ namespace UndoRedoFramework
     /// Interface for an undo/redo framework that can store actions available for being
     /// undone and redone, and manages their execution and un-execution.
     /// </summary>
-    public interface IActionManager
+    public interface IActionManager : INotifyPropertyChanged
     {
         //===========================================================================
         //                                PROPERTIES
@@ -25,6 +26,16 @@ namespace UndoRedoFramework
         /// </summary>
         string? RedoActionDescription { get; }
 
+        /// <summary>
+        /// Indicates if an action is available for being undone (i.e., un-executed).
+        /// </summary>
+        bool CanUndo { get; }
+
+        /// <summary>
+        /// Indicates if a action is available for being redone (i.e., re-executed).
+        /// </summary>
+        bool CanRedo { get; }
+
         //===========================================================================
         //                                  EVENTS
         //===========================================================================
@@ -32,7 +43,7 @@ namespace UndoRedoFramework
         /// <summary>
         /// Invoked when the state of available undo/redo actions changes.
         /// </summary>
-        event EventHandler? UndoRedoStateChanged;
+        event Action<IActionManager>? UndoRedoStateChanged;
 
         //===========================================================================
         //                                  METHODS
@@ -48,28 +59,16 @@ namespace UndoRedoFramework
         /// Stores an action as available for being undone (without executing it).
         /// </summary>
         /// <remarks>
-        /// This method is mainly intended for adding actions that represent undo/redo actions managed
-        /// by other undo/redo frameworks.
+        /// This method is mainly intended for adding actions that represent undo/redo actions that
+        /// have already been executed (e.g., observed).
         /// </remarks>
         /// <param name="action">Action to be stored</param>
         void Register( IAction action );
 
         /// <summary>
-        /// Indicates if an action is available for being undone (i.e., un-executed).
-        /// </summary>
-        /// <returns><c>true</c> if an undo action is available, <c>false</c> otherwise</returns>
-        bool CanUndo();
-
-        /// <summary>
         /// Un-executes the next action available for being undone, and makes it available for being redone.
         /// </summary>
         void Undo();
-
-        /// <summary>
-        /// Indicates if a action is available for being redone (i.e., re-executed).
-        /// </summary>
-        /// <returns><c>true</c> if a redo action is available, <c>false</c> otherwise</returns>
-        bool CanRedo();
 
         /// <summary>
         /// Re-executes the next action available for being redone, and makes it available for being undone.
