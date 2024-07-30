@@ -2,7 +2,6 @@
 /// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-using System;
 using System.ComponentModel;
 
 namespace UndoRedoFramework
@@ -16,19 +15,26 @@ namespace UndoRedoFramework
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
+        /// <inheritdoc/>
         public string? UndoActionDescription => m_undoActions.Last?.Value.Description;
 
+        /// <inheritdoc/>
         public string? RedoActionDescription => m_redoActions.Last?.Value.Description;
 
+        /// <inheritdoc/>
         public bool CanUndo => ( m_undoActions.Count > 0 );
 
+        /// <inheritdoc/>
         public bool CanRedo => ( m_redoActions.Count > 0 );
 
         //===========================================================================
         //                             PUBLIC EVENTS
         //===========================================================================
 
+        /// <inheritdoc/>
         public event Action<IActionManager>? UndoRedoStateChanged;
+
+        /// <inheritdoc/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
         //===========================================================================
@@ -52,6 +58,7 @@ namespace UndoRedoFramework
         //                            PUBLIC METHODS
         //===========================================================================
 
+        /// <inheritdoc/>
         public void Execute( IAction action )
         {
             action.Execute();
@@ -59,6 +66,7 @@ namespace UndoRedoFramework
             Register( action );
         }
 
+        /// <inheritdoc/>
         public void Register( IAction action )
         {
             bool currentCanRedo = CanRedo;
@@ -78,6 +86,7 @@ namespace UndoRedoFramework
             InvokeUpdateEvents( currentCanRedo );
         }
 
+        /// <inheritdoc/>
         public void Undo()
         {
             var actionNode = m_undoActions.Last;
@@ -93,6 +102,7 @@ namespace UndoRedoFramework
             }
         }
 
+        /// <inheritdoc/>
         public void Redo()
         {
             var actionNode = m_redoActions.Last;
