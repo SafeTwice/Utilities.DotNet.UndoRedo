@@ -48,7 +48,7 @@ namespace UndoRedoFramework
         /// When the number of stored actions to be undone exceeds <paramref name="maxUndoSize"/>, older actions to be
         /// undone are deleted.
         /// </remarks>
-        /// <param name="maxUndoSize">Max size of actions to be undone that are stored</param>
+        /// <param name="maxUndoSize">Max size of actions to be undone that are stored.</param>
         public ActionManager( uint maxUndoSize = uint.MaxValue )
         {
             m_maxActions = maxUndoSize;
@@ -59,9 +59,9 @@ namespace UndoRedoFramework
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Execute( IAction action )
+        public void RegisterAndDo( IAction action )
         {
-            action.Execute();
+            action.Do();
 
             Register( action );
         }
@@ -93,7 +93,7 @@ namespace UndoRedoFramework
 
             if( actionNode != null )
             {
-                actionNode.Value.UnExecute();
+                actionNode.Value.Undo();
 
                 m_undoActions.Remove( actionNode );
                 m_redoActions.AddLast( actionNode );
@@ -109,7 +109,7 @@ namespace UndoRedoFramework
 
             if( actionNode != null )
             {
-                actionNode.Value.Execute();
+                actionNode.Value.Do();
 
                 m_redoActions.Remove( actionNode );
                 m_undoActions.AddLast( actionNode );

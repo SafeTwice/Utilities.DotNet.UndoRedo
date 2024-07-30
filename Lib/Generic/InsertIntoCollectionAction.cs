@@ -50,13 +50,13 @@ namespace UndoRedoFramework.Generic
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Execute()
+        public void Do()
         {
             m_collectionManager.InsertItems( m_insertedItems, m_insertionIndex );
         }
 
         /// <inheritdoc/>
-        public void UnExecute()
+        public void Undo()
         {
             m_collectionManager.RemoveItems( m_insertedItems );
         }

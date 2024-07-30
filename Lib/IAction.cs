@@ -2,8 +2,6 @@
 /// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-using System;
-
 namespace UndoRedoFramework
 {
     /// <summary>
@@ -27,12 +25,12 @@ namespace UndoRedoFramework
         /// <summary>
         /// (Re)Executes an action.
         /// </summary>
-        void Execute();
+        void Do();
 
         /// <summary>
         /// Un-executes an action (undoes the outcome of its execution).
         /// </summary>
-        void UnExecute();
+        void Undo();
 
         /// <summary>
         /// Tries to merge <paramref name="action"/> with this action if it is possible.
@@ -41,8 +39,8 @@ namespace UndoRedoFramework
         /// This method is called on the last action available for being undone when a new action
         /// is added to the undo/redo stack.
         /// </remarks>
-        /// <param name="action">Action to be merged</param>
-        /// <returns><c>true</c> if the action was merged, <c>false</c> otherwise</returns>
+        /// <param name="action">Action to be merged.</param>
+        /// <returns><c>true</c> if the action was merged; <c>false</c> otherwise.</returns>
         bool TryMerge( IAction action );
     }
 }

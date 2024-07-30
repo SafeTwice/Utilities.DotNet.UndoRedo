@@ -50,16 +50,16 @@ namespace UndoRedoFramework
         //===========================================================================
 
         /// <summary>
-        /// Executes an action and stores is as available for being undone.
+        /// Stores an action as available for being undone, and executes it.
         /// </summary>
         /// <param name="action">Action to be executed and stored</param>
-        void Execute( IAction action );
+        void RegisterAndDo( IAction action );
 
         /// <summary>
         /// Stores an action as available for being undone (without executing it).
         /// </summary>
         /// <remarks>
-        /// This method is mainly intended for adding actions that represent undo/redo actions that
+        /// This method is intended for adding actions that represent undo/redo actions that
         /// have already been executed (e.g., observed).
         /// </remarks>
         /// <param name="action">Action to be stored</param>
