@@ -124,7 +124,10 @@ namespace UndoRedoFramework.Generators
                 case NotifyCollectionChangedAction.Replace:
                     if( ( e.NewItems != null ) && ( e.OldItems != null ) )
                     {
-                        m_actionManager.Register( new ReplaceInCollectionAction( this, e.OldItems, e.NewItems, m_descriptionGenerator( e.Action ),
+                        Debug.Assert( e.NewItems.Count == 1 );
+                        Debug.Assert( e.OldItems.Count == 1 );
+
+                        m_actionManager.Register( new ReplaceInCollectionAction( this, e.OldItems[ 0 ]!, e.NewItems[ 0 ]!, m_descriptionGenerator( e.Action ),
                                                                                  m_maxMergeTimeDiff ) );
                     }
                     break;
