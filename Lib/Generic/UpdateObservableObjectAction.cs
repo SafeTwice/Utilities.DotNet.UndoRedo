@@ -52,7 +52,7 @@ namespace UndoRedoFramework.Generic
             if( ( action is UpdateObservableObjectAction updateAction ) &&
                 ( updateAction.m_objectManager == m_objectManager ) &&
                 ( updateAction.m_oldValue == m_newValue ) &&
-                ( ( updateAction.m_time - m_time)  < m_maxMergeTimeDiff ) )
+                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
             {
                 m_newValue = updateAction.m_newValue;
                 m_time = updateAction.m_time;
@@ -72,7 +72,7 @@ namespace UndoRedoFramework.Generic
         private object? m_newValue;
 
         private readonly TimeSpan m_maxMergeTimeDiff;
-       
+
         private DateTime m_time;
     }
 }

@@ -59,7 +59,7 @@ namespace UndoRedoFramework.Generic
         }
 
         /// <inheritdoc/>
-        public bool TryMerge(IAction action)
+        public bool TryMerge( IAction action )
         {
             if( ( action is ReplaceInCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&
