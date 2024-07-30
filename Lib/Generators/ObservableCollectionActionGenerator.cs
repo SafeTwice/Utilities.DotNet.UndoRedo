@@ -5,7 +5,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using UndoRedoFramework.Generic;
+using UndoRedoFramework.GenericActions;
 using Utilities.DotNet.Collections.Observables;
 
 namespace UndoRedoFramework.Generators

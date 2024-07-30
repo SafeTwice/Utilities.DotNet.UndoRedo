@@ -2,12 +2,12 @@
 /// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-namespace UndoRedoFramework.Generic
+namespace UndoRedoFramework.GenericActions
 {
     /// <summary>
-    /// Undo/Redo action for moving items in a collection.
+    /// Undo/Redo action for replacing items in a collection.
     /// </summary>
-    public class MoveInCollectionAction : IAction
+    public class ReplaceInCollectionAction : IAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -24,17 +24,17 @@ namespace UndoRedoFramework.Generic
         /// Constructor.
         /// </summary>
         /// <param name="collectionManager">Manager for the collection.</param>
-        /// <param name="oldIndex">Index of the item to move.</param>
-        /// <param name="newIndex">Index where the item will be moved.</param>
+        /// <param name="oldItem">Item to replace.</param>
+        /// <param name="newItem">Item to replace with.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
-        public MoveInCollectionAction( ICollectionManager collectionManager, int oldIndex, int newIndex,
-                                       string description, TimeSpan maxMergeTimeDiff )
+        public ReplaceInCollectionAction( ICollectionManager collectionManager, object oldItem, object newItem,
+                                          string description, TimeSpan maxMergeTimeDiff )
         {
             m_collectionManager = collectionManager;
 
-            m_oldIndex = oldIndex;
-            m_newIndex = newIndex;
+            m_oldItem = oldItem;
+            m_newItem = newItem;
 
             Description = description;
 
@@ -49,25 +49,24 @@ namespace UndoRedoFramework.Generic
         /// <inheritdoc/>
         public void Do()
         {
-            m_collectionManager.MoveItem( m_oldIndex, m_newIndex );
+            m_collectionManager.ReplaceItem( m_oldItem, m_newItem );
         }
 
         /// <inheritdoc/>
         public void Undo()
         {
-            m_collectionManager.MoveItem( m_newIndex, m_oldIndex );
+            m_collectionManager.ReplaceItem( m_newItem, m_oldItem );
         }
 
         /// <inheritdoc/>
         public bool TryMerge( IAction action )
         {
-            if( ( action is MoveInCollectionAction updateAction ) &&
+            if( ( action is ReplaceInCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&
                 ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) &&
-                ( m_newIndex == updateAction.m_oldIndex ) &&
-                ( m_oldIndex != updateAction.m_newIndex ) ) // Avoid having a "do nothing" action
+                ( m_newItem == updateAction.m_oldItem ) )
             {
-                m_newIndex = updateAction.m_newIndex;
+                m_newItem = updateAction.m_newItem;
 
                 m_time = updateAction.m_time;
                 return true;
@@ -84,8 +83,8 @@ namespace UndoRedoFramework.Generic
 
         private readonly ICollectionManager m_collectionManager;
 
-        private readonly int m_oldIndex;
-        private int m_newIndex;
+        private readonly object m_oldItem;
+        private object m_newItem;
 
         private readonly TimeSpan m_maxMergeTimeDiff;
         private DateTime m_time;

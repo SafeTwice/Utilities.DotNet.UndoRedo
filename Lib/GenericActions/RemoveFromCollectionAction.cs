@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace UndoRedoFramework.Generic
+namespace UndoRedoFramework.GenericActions
 {
     /// <summary>
     /// Undo/Redo action removing items from a collection.

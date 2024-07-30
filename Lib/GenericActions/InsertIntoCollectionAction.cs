@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace UndoRedoFramework.Generic
+namespace UndoRedoFramework.GenericActions
 {
     /// <summary>
     /// Undo/Redo action for inserting items into a collection.

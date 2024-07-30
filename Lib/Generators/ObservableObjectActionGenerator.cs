@@ -3,7 +3,7 @@
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
-using UndoRedoFramework.Generic;
+using UndoRedoFramework.GenericActions;
 
 namespace UndoRedoFramework.Generators
 {

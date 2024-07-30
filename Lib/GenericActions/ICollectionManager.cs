@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace UndoRedoFramework.Generic
+namespace UndoRedoFramework.GenericActions
 {
     /// <summary>
     /// Represents an object that can manage a collection.

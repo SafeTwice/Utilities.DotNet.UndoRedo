@@ -4,7 +4,7 @@
 
 using System.ComponentModel;
 
-namespace UndoRedoFramework.Generic
+namespace UndoRedoFramework.Generators
 {
     /// <summary>
     /// Represents an object that can be observed for changes.
