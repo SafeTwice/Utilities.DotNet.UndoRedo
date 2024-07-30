@@ -36,6 +36,11 @@ namespace UndoRedoFramework
         /// </summary>
         bool CanRedo { get; }
 
+        /// <summary>
+        /// Action available for being undone (or <c>null</c> if none available).
+        /// </summary>
+        IAction? UndoAction { get; }
+
         //===========================================================================
         //                                  EVENTS
         //===========================================================================

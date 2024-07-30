@@ -37,6 +37,16 @@ namespace UndoRedoFramework
         /// <inheritdoc/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public IAction? UndoAction
+        {
+            get
+            {
+                var actionNode = m_undoActions.Last;
+                return actionNode?.Value;
+            }
+        }
+
+
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
         //===========================================================================
