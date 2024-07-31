@@ -30,11 +30,11 @@ namespace UndoRedoFramework.Generators
         /// <param name="collection">Collection to observe.</param>
         /// <param name="descriptionGenerator">Function to generate the description of the actions.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
-        public ObservableCollectionActionGenerator( IActionManager actionManager, IObservableCollection collection,
+        public ObservableCollectionActionGenerator( IObservableCollection collection, Func<IActionManager?> actionManagerProvider,
                                                     Func<NotifyCollectionChangedAction, string> descriptionGenerator,
                                                     TimeSpan? maxMergeTimeDiff = null )
         {
-            m_actionManager = actionManager;
+            m_actionManagerProvider = actionManagerProvider;
             m_collection = collection;
             m_descriptionGenerator = descriptionGenerator;
             m_maxMergeTimeDiff = maxMergeTimeDiff ?? DEFAULT_MAX_MERGE_TIME_DIFF;
@@ -105,7 +105,9 @@ namespace UndoRedoFramework.Generators
 
         private void OnCollectionChanged( object? sender, NotifyCollectionChangedEventArgs e )
         {
-            if( m_ignoreEvents )
+            var actionManager = m_actionManagerProvider();
+
+            if( m_ignoreEvents || ( actionManager == null ) )
             {
                 return;
             }
@@ -117,16 +119,16 @@ namespace UndoRedoFramework.Generators
                 case NotifyCollectionChangedAction.Add:
                     if( e.NewItems != null )
                     {
-                        m_actionManager.Register( new InsertIntoCollectionAction( this, e.NewItems, e.NewStartingIndex, m_descriptionGenerator( e.Action ),
-                                                                                  m_maxMergeTimeDiff ) );
+                        actionManager.Register( new InsertIntoCollectionAction( this, e.NewItems, e.NewStartingIndex, m_descriptionGenerator( e.Action ),
+                                                                                m_maxMergeTimeDiff ) );
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     if( e.OldItems != null )
                     {
-                        m_actionManager.Register( new RemoveFromCollectionAction( this, e.OldItems, e.OldStartingIndex, m_descriptionGenerator( e.Action ),
-                                                                                  m_maxMergeTimeDiff ) );
+                        actionManager.Register( new RemoveFromCollectionAction( this, e.OldItems, e.OldStartingIndex, m_descriptionGenerator( e.Action ),
+                                                                                m_maxMergeTimeDiff ) );
                     }
                     break;
 
@@ -136,8 +138,8 @@ namespace UndoRedoFramework.Generators
                         Debug.Assert( e.NewItems.Count == 1 );
                         Debug.Assert( e.OldItems.Count == 1 );
 
-                        m_actionManager.Register( new ReplaceInCollectionAction( this, e.OldItems[ 0 ]!, e.NewItems[ 0 ]!, m_descriptionGenerator( e.Action ),
-                                                                                 m_maxMergeTimeDiff ) );
+                        actionManager.Register( new ReplaceInCollectionAction( this, e.OldItems[ 0 ]!, e.NewItems[ 0 ]!, m_descriptionGenerator( e.Action ),
+                                                                               m_maxMergeTimeDiff ) );
                     }
                     break;
 
@@ -156,7 +158,7 @@ namespace UndoRedoFramework.Generators
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly IActionManager m_actionManager;
+        private readonly Func<IActionManager?> m_actionManagerProvider;
         private readonly IObservableCollection m_collection;
 
         private readonly Func<NotifyCollectionChangedAction, string> m_descriptionGenerator;

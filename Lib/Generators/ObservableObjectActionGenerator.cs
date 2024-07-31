@@ -19,11 +19,9 @@ namespace UndoRedoFramework.Generators
         //                          PUBLIC CONSTRUCTORS
         //===========================================================================
 
-        public ObservableObjectActionGenerator( IActionManager actionManager, IObservableObject observableObject, string propertyName,
+        public ObservableObjectActionGenerator( IObservableObject observableObject, string propertyName,
                                                 string actionDescription, TimeSpan? maxMergeTimeDiff = null )
         {
-            m_actionManager = actionManager;
-
             m_observableObject = observableObject;
             m_propertyName = propertyName;
 
@@ -69,9 +67,11 @@ namespace UndoRedoFramework.Generators
                 var oldValue = m_currentValue;
                 var newValue = m_observableObject[ m_propertyName ];
 
-                if( !m_ignoreEvents && !Equals( oldValue, newValue ) )
+                var actionManager = m_observableObject.ActionManager;
+
+                if( !m_ignoreEvents && ( actionManager != null ) && !Equals( oldValue, newValue ) )
                 {
-                    m_actionManager.Register( new UpdateObservableObjectAction( this, oldValue, newValue, m_actionDescription, m_maxMergeTimeDiff ) );
+                    actionManager.Register( new UpdateObservableObjectAction( this, oldValue, newValue, m_actionDescription, m_maxMergeTimeDiff ) );
                 }
 
                 m_currentValue = newValue;
@@ -87,8 +87,6 @@ namespace UndoRedoFramework.Generators
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
-
-        private readonly IActionManager m_actionManager;
 
         private readonly IObservableObject m_observableObject;
         private readonly string m_propertyName;

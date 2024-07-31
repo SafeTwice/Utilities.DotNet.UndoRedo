@@ -12,8 +12,10 @@ namespace UndoRedoFramework.Generators
     public interface IObservableObject : INotifyPropertyChanged
     {
         //===========================================================================
-        //                               NESTED TYPES
+        //                                PROPERTIES
         //===========================================================================
+
+        IActionManager? ActionManager { get; }
 
         /// <summary>
         /// Gets or sets the value of a property of the observed object.
