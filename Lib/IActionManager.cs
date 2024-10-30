@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
@@ -10,7 +10,7 @@ namespace UndoRedoFramework
     /// Interface for an undo/redo framework that can store actions available for being
     /// undone and redone, and manages their execution and un-execution.
     /// </summary>
-    public interface IActionManager : INotifyPropertyChanged
+    public interface IActionManager : INotifyPropertyChanged, IDisposable
     {
         //===========================================================================
         //                                PROPERTIES

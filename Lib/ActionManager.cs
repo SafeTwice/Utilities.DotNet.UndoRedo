@@ -1,15 +1,16 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
+using Utilities.DotNet;
 
 namespace UndoRedoFramework
 {
     /// <summary>
     /// Manages actions that can be done and undone.
     /// </summary>
-    public class ActionManager : IActionManager
+    public sealed class ActionManager : IActionManager
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -27,16 +28,7 @@ namespace UndoRedoFramework
         /// <inheritdoc/>
         public bool CanRedo => ( m_redoActions.Count > 0 );
 
-        //===========================================================================
-        //                             PUBLIC EVENTS
-        //===========================================================================
-
         /// <inheritdoc/>
-        public event Action<IActionManager>? UndoRedoStateChanged;
-
-        /// <inheritdoc/>
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public IAction? UndoAction
         {
             get
@@ -46,6 +38,15 @@ namespace UndoRedoFramework
             }
         }
 
+        //===========================================================================
+        //                             PUBLIC EVENTS
+        //===========================================================================
+
+        /// <inheritdoc/>
+        public event Action<IActionManager>? UndoRedoStateChanged;
+
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -87,11 +88,14 @@ namespace UndoRedoFramework
 
                 if( m_undoActions.Count > m_maxActions )
                 {
+                    var firstAction = m_undoActions.First?.Value as IReleaseNotifiedAction;
+                    firstAction?.OnReleased( true );
+
                     m_undoActions.RemoveFirst();
                 }
             }
 
-            m_redoActions.Clear();
+            ClearRedoActions();
 
             InvokeUpdateEvents( currentCanRedo );
         }
@@ -128,9 +132,28 @@ namespace UndoRedoFramework
             }
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            CleanUndoActions();
+            ClearRedoActions();
+        }
+
         //===========================================================================
         //                            PRIVATE METHODS
         //===========================================================================
+
+        private void CleanUndoActions()
+        {
+            m_undoActions.OfType<IReleaseNotifiedAction>().ForEach( action => action.OnReleased( true ) );
+            m_undoActions.Clear();
+        }
+
+        private void ClearRedoActions()
+        {
+            m_redoActions.OfType<IReleaseNotifiedAction>().ForEach( action => action.OnReleased( false ) );
+            m_redoActions.Clear();
+        }
 
         private void InvokeUpdateEvents( bool canRedoUpdated )
         {
@@ -150,8 +173,8 @@ namespace UndoRedoFramework
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private LinkedList<IAction> m_undoActions = new();
-        private LinkedList<IAction> m_redoActions = new();
-        private uint m_maxActions;
+        private readonly LinkedList<IAction> m_undoActions = new();
+        private readonly LinkedList<IAction> m_redoActions = new();
+        private readonly uint m_maxActions;
     }
 }
