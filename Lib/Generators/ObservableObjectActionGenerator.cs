@@ -4,6 +4,7 @@
 
 using System.ComponentModel;
 using UndoRedoFramework.GenericActions;
+using Utilities.DotNet;
 
 namespace UndoRedoFramework.Generators
 {
@@ -13,7 +14,7 @@ namespace UndoRedoFramework.Generators
     /// <remarks>
     /// When the observed property changes, the generator creates the corresponding action:
     /// </remarks>
-    public class ObservableObjectActionGenerator : IObservableObjectManager
+    public class ObservableObjectActionGenerator : DisposableObject, IObservableObjectManager
     {
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -35,15 +36,6 @@ namespace UndoRedoFramework.Generators
         }
 
         //===========================================================================
-        //                               FINALIZER
-        //===========================================================================
-
-        ~ObservableObjectActionGenerator()
-        {
-            m_observableObject.PropertyChanged -= OnPropertyChanged;
-        }
-
-        //===========================================================================
         //                            PUBLIC METHODS
         //===========================================================================
 
@@ -54,6 +46,17 @@ namespace UndoRedoFramework.Generators
             m_observableObject[ m_propertyName ] = value;
 
             m_ignoreEvents = false;
+        }
+
+        //===========================================================================
+        //                            PROTECTED METHODS
+        //===========================================================================
+
+        protected override void Dispose( bool disposing )
+        {
+            m_observableObject.PropertyChanged -= OnPropertyChanged;
+
+            base.Dispose( disposing );
         }
 
         //===========================================================================

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using UndoRedoFramework.GenericActions;
+using Utilities.DotNet;
 using Utilities.DotNet.Collections.Observables;
 
 namespace UndoRedoFramework.Generators
@@ -17,7 +18,7 @@ namespace UndoRedoFramework.Generators
     /// When the observed collection changes, the generator creates the corresponding action:
     /// <see cref="InsertIntoCollectionAction"/>, <see cref="RemoveFromCollectionAction"/> or <see cref="ReplaceInCollectionAction"/>.
     /// </remarks>
-    public class ObservableCollectionActionGenerator<T> : ICollectionManager
+    public class ObservableCollectionActionGenerator<T> : DisposableObject, ICollectionManager
     {
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -40,15 +41,6 @@ namespace UndoRedoFramework.Generators
             m_maxMergeTimeDiff = maxMergeTimeDiff ?? DEFAULT_MAX_MERGE_TIME_DIFF;
 
             m_collection.CollectionChanged += OnCollectionChanged;
-        }
-
-        //===========================================================================
-        //                               FINALIZER
-        //===========================================================================
-
-        ~ObservableCollectionActionGenerator()
-        {
-            m_collection.CollectionChanged -= OnCollectionChanged;
         }
 
         //===========================================================================
@@ -98,6 +90,17 @@ namespace UndoRedoFramework.Generators
         }
 
         public void MoveItem( int oldIndex, int newIndex ) => throw new NotImplementedException();
+
+        //===========================================================================
+        //                            PROTECTED METHODS
+        //===========================================================================
+
+        protected override void Dispose( bool disposing )
+        {
+            m_collection.CollectionChanged -= OnCollectionChanged;
+
+            base.Dispose( disposing );
+        }
 
         //===========================================================================
         //                            PRIVATE METHODS

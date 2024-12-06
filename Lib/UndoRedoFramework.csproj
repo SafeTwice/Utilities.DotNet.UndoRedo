@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Utilities.DotNet\Collections\Utilities.DotNet.Collections.csproj" />
+    <ProjectReference Include="..\..\Utilities.DotNet\Lib\Utilities.DotNet.csproj" />
   </ItemGroup>
 
 </Project>
