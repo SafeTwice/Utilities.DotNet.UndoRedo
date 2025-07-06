@@ -1,10 +1,9 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
 using UndoRedoFramework.GenericActions;
-using Utilities.DotNet;
 
 namespace UndoRedoFramework.Generators
 {
@@ -14,19 +13,32 @@ namespace UndoRedoFramework.Generators
     /// <remarks>
     /// When the observed property changes, the generator creates the corresponding action:
     /// </remarks>
-    public class ObservableObjectActionGenerator : DisposableObject, IObservableObjectManager
+    public class ObservableObjectActionGenerator : ObservableObjectManager
     {
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
         //===========================================================================
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <remarks>
+        /// The <paramref name="descriptionGenerator"/> function is invoked when the observed property changes
+        /// to generate the description of the new Undo/Redo action. It receives as parameter a tuple with the old 
+        /// and new values of the property.
+        /// </remarks>
+        /// <param name="observableObject">Object to observe for changes.</param>
+        /// <param name="propertyName">Property in the object to observe for changes.</param>
+        /// <param name="descriptionGenerator">Function that generates the description of the Undo/Redo action.</param>
+        /// <param name="maxMergeTimeDiff">Maximum time between consecutively generated actions to automatically merge them.</param>
         public ObservableObjectActionGenerator( IObservableObject observableObject, string propertyName,
-                                                string actionDescription, TimeSpan? maxMergeTimeDiff = null )
+                                                Func<(object? oldValue, object? newValue), string> descriptionGenerator,
+                                                TimeSpan? maxMergeTimeDiff = null )
         {
             m_observableObject = observableObject;
             m_propertyName = propertyName;
 
-            m_actionDescription = actionDescription;
+            m_descriptionGenerator = descriptionGenerator;
 
             m_maxMergeTimeDiff = maxMergeTimeDiff ?? DEFAULT_MAX_MERGE_TIME_DIFF;
 
@@ -36,10 +48,10 @@ namespace UndoRedoFramework.Generators
         }
 
         //===========================================================================
-        //                            PUBLIC METHODS
+        //                            INTERNAL METHODS
         //===========================================================================
 
-        public void SetObservedPropertyValue( object? value )
+        internal override void SetObservedPropertyValue( object? value )
         {
             m_ignoreEvents = true;
 
@@ -74,7 +86,10 @@ namespace UndoRedoFramework.Generators
 
                 if( !m_ignoreEvents && ( actionManager != null ) && !Equals( oldValue, newValue ) )
                 {
-                    actionManager.Register( new UpdateObservableObjectAction( this, oldValue, newValue, m_actionDescription, m_maxMergeTimeDiff ) );
+                    var actionDescription = m_descriptionGenerator( (oldValue, newValue) );
+
+                    actionManager.Register( new UpdateObservableObjectAction( this, oldValue, newValue, actionDescription,
+                                                                              m_maxMergeTimeDiff ) );
                 }
 
                 m_currentValue = newValue;
@@ -94,7 +109,7 @@ namespace UndoRedoFramework.Generators
         private readonly IObservableObject m_observableObject;
         private readonly string m_propertyName;
 
-        private readonly string m_actionDescription;
+        private readonly Func<(object?, object?), string> m_descriptionGenerator;
 
         private readonly TimeSpan m_maxMergeTimeDiff;
 

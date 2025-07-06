@@ -1,11 +1,11 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 namespace UndoRedoFramework.GenericActions
 {
     /// <summary>
-    /// Undo/Redo action for updating an observable object.
+    /// Undo/Redo action for the update of an observable property of an observable object.
     /// </summary>
     public class UpdateObservableObjectAction : IAction
     {
@@ -13,40 +13,26 @@ namespace UndoRedoFramework.GenericActions
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
+        /// <inheritdoc/>
         public string Description { get; }
-
-        //===========================================================================
-        //                          PUBLIC CONSTRUCTORS
-        //===========================================================================
-
-        public UpdateObservableObjectAction( IObservableObjectManager objectManager, object? oldValue, object? newValue,
-                                             string description, TimeSpan maxMergeTimeDiff )
-        {
-            m_objectManager = objectManager;
-
-            m_oldValue = oldValue;
-            m_newValue = newValue;
-
-            Description = description;
-
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.Now;
-        }
 
         //===========================================================================
         //                            PUBLIC METHODS
         //===========================================================================
 
+        /// <inheritdoc/>
         public void Do()
         {
             m_objectManager.SetObservedPropertyValue( m_newValue );
         }
 
+        /// <inheritdoc/>
         public void Undo()
         {
             m_objectManager.SetObservedPropertyValue( m_oldValue );
         }
 
+        /// <inheritdoc/>
         public bool TryMerge( IAction action )
         {
             if( ( action is UpdateObservableObjectAction updateAction ) &&
@@ -63,10 +49,36 @@ namespace UndoRedoFramework.GenericActions
         }
 
         //===========================================================================
+        //                          INTERNAL CONSTRUCTORS
+        //===========================================================================
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="objectManager">Manager for an observable object.</param>
+        /// <param name="oldValue">Old value of the property being updated.</param>
+        /// <param name="newValue">New value of the property being updated.</param>
+        /// <param name="description">Description of the action.</param>
+        /// <param name="maxMergeTimeDiff">Maximum time difference between this action and the previous one to allow merging.</param>
+        internal UpdateObservableObjectAction( ObservableObjectManager objectManager, object? oldValue, object? newValue,
+                                               string description, TimeSpan maxMergeTimeDiff )
+        {
+            m_objectManager = objectManager;
+
+            m_oldValue = oldValue;
+            m_newValue = newValue;
+
+            Description = description;
+
+            m_maxMergeTimeDiff = maxMergeTimeDiff;
+            m_time = DateTime.Now;
+        }
+
+        //===========================================================================
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly IObservableObjectManager m_objectManager;
+        private readonly ObservableObjectManager m_objectManager;
 
         private readonly object? m_oldValue;
         private object? m_newValue;
