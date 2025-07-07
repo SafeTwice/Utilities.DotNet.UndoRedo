@@ -7,9 +7,9 @@ using UndoRedoFramework.Generators;
 namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
-    /// Undo/Redo action for the update of an observable property of an observable object.
+    /// Undo/Redo action for the update of an observable property of a managed object.
     /// </summary>
-    internal class UpdateObservableObjectAction : IUndoRedoAction
+    internal class UpdateManagedObjectAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -37,7 +37,7 @@ namespace UndoRedoFramework.GeneratedActions
         /// <inheritdoc/>
         public bool TryMerge( IUndoRedoAction action )
         {
-            if( ( action is UpdateObservableObjectAction updateAction ) &&
+            if( ( action is UpdateManagedObjectAction updateAction ) &&
                 ( updateAction.m_objectManager == m_objectManager ) &&
                 ( updateAction.m_oldValue == m_newValue ) &&
                 ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
@@ -62,8 +62,8 @@ namespace UndoRedoFramework.GeneratedActions
         /// <param name="newValue">New value of the property being updated.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference between this action and the previous one to allow merging.</param>
-        internal UpdateObservableObjectAction( UndoRedoObjectManager objectManager, object? oldValue, object? newValue,
-                                               string description, TimeSpan maxMergeTimeDiff )
+        internal UpdateManagedObjectAction( UndoRedoObjectManager objectManager, object? oldValue, object? newValue,
+                                            string description, TimeSpan maxMergeTimeDiff )
         {
             m_objectManager = objectManager;
 

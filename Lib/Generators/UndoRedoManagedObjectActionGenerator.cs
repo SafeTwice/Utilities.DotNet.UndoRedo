@@ -32,8 +32,8 @@ namespace UndoRedoFramework.Generators
         /// <param name="descriptionGenerator">Function that generates the description of the undo/redo action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time between consecutively generated actions to automatically merge them.</param>
         public UndoRedoManagedObjectActionGenerator( IUndoRedoManagedObject managedObject, string propertyName,
-                                                Func<(object? oldValue, object? newValue), string> descriptionGenerator,
-                                                TimeSpan? maxMergeTimeDiff = null )
+                                                     Func<(object? oldValue, object? newValue), string> descriptionGenerator,
+                                                     TimeSpan? maxMergeTimeDiff = null )
         {
             m_managedObject = managedObject;
             m_propertyName = propertyName;
@@ -88,8 +88,8 @@ namespace UndoRedoFramework.Generators
                 {
                     var actionDescription = m_descriptionGenerator( (oldValue, newValue) );
 
-                    actionManager.Register( new UpdateObservableObjectAction( this, oldValue, newValue, actionDescription,
-                                                                              m_maxMergeTimeDiff ) );
+                    actionManager.Register( new UpdateManagedObjectAction( this, oldValue, newValue, actionDescription,
+                                                                           m_maxMergeTimeDiff ) );
                 }
 
                 m_currentValue = newValue;
