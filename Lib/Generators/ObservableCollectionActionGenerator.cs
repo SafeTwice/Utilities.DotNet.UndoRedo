@@ -5,7 +5,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using UndoRedoFramework.GenericActions;
+using UndoRedoFramework.GeneratedActions;
 using Utilities.DotNet;
 using Utilities.DotNet.Collections.Observables;
 

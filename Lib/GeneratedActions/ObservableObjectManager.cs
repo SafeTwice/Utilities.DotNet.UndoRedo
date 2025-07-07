@@ -1,10 +1,10 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using Utilities.DotNet;
 
-namespace UndoRedoFramework.GenericActions
+namespace UndoRedoFramework.GeneratedActions
 {
 #pragma warning disable S1694 // This class is not an interface because interface methods cannot be internal.
 

@@ -2,7 +2,7 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-namespace UndoRedoFramework.GenericActions
+namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
     /// Undo/Redo action for the update of an observable property of an observable object.

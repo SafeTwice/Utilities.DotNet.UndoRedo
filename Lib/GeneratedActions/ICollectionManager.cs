@@ -1,10 +1,10 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.Collections;
 
-namespace UndoRedoFramework.GenericActions
+namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
     /// Represents an object that can manage a collection.

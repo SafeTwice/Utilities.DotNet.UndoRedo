@@ -2,14 +2,12 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-using System.Collections;
-
-namespace UndoRedoFramework.GenericActions
+namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
-    /// Undo/Redo action for inserting items into a collection.
+    /// Undo/Redo action for moving items in a collection.
     /// </summary>
-    public class InsertIntoCollectionAction : IUndoRedoAction
+    public class MoveInCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -17,7 +15,6 @@ namespace UndoRedoFramework.GenericActions
 
         /// <inheritdoc/>
         public string Description { get; }
-
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -27,17 +24,17 @@ namespace UndoRedoFramework.GenericActions
         /// Constructor.
         /// </summary>
         /// <param name="collectionManager">Manager for the collection.</param>
-        /// <param name="insertedItems">Items to insert.</param>
-        /// <param name="insertionIndex">Index where to insert the items.</param>
+        /// <param name="oldIndex">Index of the item to move.</param>
+        /// <param name="newIndex">Index where the item will be moved.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
-        public InsertIntoCollectionAction( ICollectionManager collectionManager, IList insertedItems, int insertionIndex,
-                                           string description, TimeSpan maxMergeTimeDiff )
+        public MoveInCollectionAction( ICollectionManager collectionManager, int oldIndex, int newIndex,
+                                       string description, TimeSpan maxMergeTimeDiff )
         {
             m_collectionManager = collectionManager;
 
-            m_insertedItems = insertedItems;
-            m_insertionIndex = insertionIndex;
+            m_oldIndex = oldIndex;
+            m_newIndex = newIndex;
 
             Description = description;
 
@@ -52,32 +49,25 @@ namespace UndoRedoFramework.GenericActions
         /// <inheritdoc/>
         public void Do()
         {
-            m_collectionManager.InsertItems( m_insertedItems, m_insertionIndex );
+            m_collectionManager.MoveItem( m_oldIndex, m_newIndex );
         }
 
         /// <inheritdoc/>
         public void Undo()
         {
-            m_collectionManager.RemoveItems( m_insertedItems );
+            m_collectionManager.MoveItem( m_newIndex, m_oldIndex );
         }
 
         /// <inheritdoc/>
         public bool TryMerge( IUndoRedoAction action )
         {
-            if( ( action is InsertIntoCollectionAction updateAction ) &&
+            if( ( action is MoveInCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
+                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) &&
+                ( m_newIndex == updateAction.m_oldIndex ) &&
+                ( m_oldIndex != updateAction.m_newIndex ) ) // Avoid having a "do nothing" action
             {
-                if( ( ( m_insertionIndex > 0 ) || ( updateAction.m_insertionIndex > 0 ) ) &&
-                    ( updateAction.m_insertionIndex != ( m_insertionIndex + m_insertedItems.Count ) ) )
-                {
-                    return false;
-                }
-
-                foreach( object item in updateAction.m_insertedItems )
-                {
-                    m_insertedItems.Add( item );
-                }
+                m_newIndex = updateAction.m_newIndex;
 
                 m_time = updateAction.m_time;
                 return true;
@@ -94,8 +84,8 @@ namespace UndoRedoFramework.GenericActions
 
         private readonly ICollectionManager m_collectionManager;
 
-        private readonly IList m_insertedItems;
-        private readonly int m_insertionIndex;
+        private readonly int m_oldIndex;
+        private int m_newIndex;
 
         private readonly TimeSpan m_maxMergeTimeDiff;
         private DateTime m_time;

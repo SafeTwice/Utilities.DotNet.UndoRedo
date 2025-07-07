@@ -2,12 +2,14 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-namespace UndoRedoFramework.GenericActions
+using System.Collections;
+
+namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
-    /// Undo/Redo action for replacing items in a collection.
+    /// Undo/Redo action removing items from a collection.
     /// </summary>
-    public class ReplaceInCollectionAction : IUndoRedoAction
+    public class RemoveFromCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -24,17 +26,17 @@ namespace UndoRedoFramework.GenericActions
         /// Constructor.
         /// </summary>
         /// <param name="collectionManager">Manager for the collection.</param>
-        /// <param name="oldItem">Item to replace.</param>
-        /// <param name="newItem">Item to replace with.</param>
+        /// <param name="removedItems">Items to remove.</param>
+        /// <param name="deletionIndex">Index where the items are removed.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
-        public ReplaceInCollectionAction( ICollectionManager collectionManager, object oldItem, object newItem,
-                                          string description, TimeSpan maxMergeTimeDiff )
+        public RemoveFromCollectionAction( ICollectionManager collectionManager, IList removedItems, int deletionIndex,
+                                           string description, TimeSpan maxMergeTimeDiff )
         {
             m_collectionManager = collectionManager;
 
-            m_oldItem = oldItem;
-            m_newItem = newItem;
+            m_removedItems = removedItems;
+            m_deletionIndex = deletionIndex;
 
             Description = description;
 
@@ -49,24 +51,32 @@ namespace UndoRedoFramework.GenericActions
         /// <inheritdoc/>
         public void Do()
         {
-            m_collectionManager.ReplaceItem( m_oldItem, m_newItem );
+            m_collectionManager.RemoveItems( m_removedItems );
         }
 
         /// <inheritdoc/>
         public void Undo()
         {
-            m_collectionManager.ReplaceItem( m_newItem, m_oldItem );
+            m_collectionManager.InsertItems( m_removedItems, m_deletionIndex );
         }
 
         /// <inheritdoc/>
         public bool TryMerge( IUndoRedoAction action )
         {
-            if( ( action is ReplaceInCollectionAction updateAction ) &&
+            if( ( action is RemoveFromCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) &&
-                ( m_newItem == updateAction.m_oldItem ) )
+                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
             {
-                m_newItem = updateAction.m_newItem;
+                if( ( ( m_deletionIndex > 0 ) || ( updateAction.m_deletionIndex > 0 ) ) &&
+                    ( updateAction.m_deletionIndex != m_deletionIndex ) )
+                {
+                    return false;
+                }
+
+                foreach( object item in updateAction.m_removedItems )
+                {
+                    m_removedItems.Add( item );
+                }
 
                 m_time = updateAction.m_time;
                 return true;
@@ -83,8 +93,8 @@ namespace UndoRedoFramework.GenericActions
 
         private readonly ICollectionManager m_collectionManager;
 
-        private readonly object m_oldItem;
-        private object m_newItem;
+        private readonly IList m_removedItems;
+        private readonly int m_deletionIndex;
 
         private readonly TimeSpan m_maxMergeTimeDiff;
         private DateTime m_time;

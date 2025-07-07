@@ -1,9 +1,9 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
-using UndoRedoFramework.GenericActions;
+using UndoRedoFramework.GeneratedActions;
 
 namespace UndoRedoFramework.Generators
 {
