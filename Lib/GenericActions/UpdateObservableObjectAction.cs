@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 namespace UndoRedoFramework.GenericActions
@@ -7,7 +7,7 @@ namespace UndoRedoFramework.GenericActions
     /// <summary>
     /// Undo/Redo action for the update of an observable property of an observable object.
     /// </summary>
-    public class UpdateObservableObjectAction : IAction
+    public class UpdateObservableObjectAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -33,7 +33,7 @@ namespace UndoRedoFramework.GenericActions
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IAction action )
+        public bool TryMerge( IUndoRedoAction action )
         {
             if( ( action is UpdateObservableObjectAction updateAction ) &&
                 ( updateAction.m_objectManager == m_objectManager ) &&

@@ -10,7 +10,7 @@ namespace UndoRedoFramework
     /// <summary>
     /// Manages actions that can be done and undone.
     /// </summary>
-    public sealed class ActionManager : IActionManager
+    public sealed class UndoRedoActionManager : IUndoRedoActionManager
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -29,7 +29,7 @@ namespace UndoRedoFramework
         public bool CanRedo => ( m_redoActions.Count > 0 );
 
         /// <inheritdoc/>
-        public IAction? UndoAction
+        public IUndoRedoAction? UndoAction
         {
             get
             {
@@ -43,7 +43,7 @@ namespace UndoRedoFramework
         //===========================================================================
 
         /// <inheritdoc/>
-        public event Action<IActionManager>? UndoRedoStateChanged;
+        public event Action<IUndoRedoActionManager>? UndoRedoStateChanged;
 
         /// <inheritdoc/>
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -60,7 +60,7 @@ namespace UndoRedoFramework
         /// undone are deleted.
         /// </remarks>
         /// <param name="maxUndoSize">Max size of actions to be undone that are stored.</param>
-        public ActionManager( uint maxUndoSize = uint.MaxValue )
+        public UndoRedoActionManager( uint maxUndoSize = uint.MaxValue )
         {
             m_maxActions = maxUndoSize;
         }
@@ -70,7 +70,7 @@ namespace UndoRedoFramework
         //===========================================================================
 
         /// <inheritdoc/>
-        public void RegisterAndDo( IAction action )
+        public void RegisterAndDo( IUndoRedoAction action )
         {
             action.Do();
 
@@ -78,7 +78,7 @@ namespace UndoRedoFramework
         }
 
         /// <inheritdoc/>
-        public void Register( IAction action )
+        public void Register( IUndoRedoAction action )
         {
             bool currentCanRedo = CanRedo;
 
@@ -88,7 +88,7 @@ namespace UndoRedoFramework
 
                 if( m_undoActions.Count > m_maxActions )
                 {
-                    var firstAction = m_undoActions.First?.Value as IReleaseNotifiedAction;
+                    var firstAction = m_undoActions.First?.Value as IReleaseNotifiedUndoRedoAction;
                     firstAction?.OnReleased( true );
 
                     m_undoActions.RemoveFirst();
@@ -145,13 +145,13 @@ namespace UndoRedoFramework
 
         private void CleanUndoActions()
         {
-            m_undoActions.OfType<IReleaseNotifiedAction>().ForEach( action => action.OnReleased( true ) );
+            m_undoActions.OfType<IReleaseNotifiedUndoRedoAction>().ForEach( action => action.OnReleased( true ) );
             m_undoActions.Clear();
         }
 
         private void ClearRedoActions()
         {
-            m_redoActions.OfType<IReleaseNotifiedAction>().ForEach( action => action.OnReleased( false ) );
+            m_redoActions.OfType<IReleaseNotifiedUndoRedoAction>().ForEach( action => action.OnReleased( false ) );
             m_redoActions.Clear();
         }
 
@@ -173,8 +173,8 @@ namespace UndoRedoFramework
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly LinkedList<IAction> m_undoActions = new();
-        private readonly LinkedList<IAction> m_redoActions = new();
+        private readonly LinkedList<IUndoRedoAction> m_undoActions = new();
+        private readonly LinkedList<IUndoRedoAction> m_redoActions = new();
         private readonly uint m_maxActions;
     }
 }

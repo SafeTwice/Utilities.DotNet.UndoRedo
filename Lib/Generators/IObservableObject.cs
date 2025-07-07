@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace UndoRedoFramework.Generators
         //                                PROPERTIES
         //===========================================================================
 
-        IActionManager? ActionManager { get; }
+        IUndoRedoActionManager? ActionManager { get; }
 
         /// <summary>
         /// Gets or sets the value of a property of the observed object.

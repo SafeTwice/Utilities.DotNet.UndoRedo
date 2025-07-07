@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 namespace UndoRedoFramework.GenericActions
@@ -7,7 +7,7 @@ namespace UndoRedoFramework.GenericActions
     /// <summary>
     /// Undo/Redo action for moving items in a collection.
     /// </summary>
-    public class MoveInCollectionAction : IAction
+    public class MoveInCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -59,7 +59,7 @@ namespace UndoRedoFramework.GenericActions
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IAction action )
+        public bool TryMerge( IUndoRedoAction action )
         {
             if( ( action is MoveInCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&

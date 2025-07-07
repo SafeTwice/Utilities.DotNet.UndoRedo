@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.ComponentModel;
@@ -7,10 +7,10 @@ using System.ComponentModel;
 namespace UndoRedoFramework
 {
     /// <summary>
-    /// Interface for an undo/redo framework that can store actions available for being
+    /// Interface for an undo/redo manager that can store actions available for being
     /// undone and redone, and manages their execution and un-execution.
     /// </summary>
-    public interface IActionManager : INotifyPropertyChanged, IDisposable
+    public interface IUndoRedoActionManager : INotifyPropertyChanged, IDisposable
     {
         //===========================================================================
         //                                PROPERTIES
@@ -39,7 +39,7 @@ namespace UndoRedoFramework
         /// <summary>
         /// Action available for being undone (or <c>null</c> if none available).
         /// </summary>
-        IAction? UndoAction { get; }
+        IUndoRedoAction? UndoAction { get; }
 
         //===========================================================================
         //                                  EVENTS
@@ -48,7 +48,7 @@ namespace UndoRedoFramework
         /// <summary>
         /// Invoked when the state of available undo/redo actions changes.
         /// </summary>
-        event Action<IActionManager>? UndoRedoStateChanged;
+        event Action<IUndoRedoActionManager>? UndoRedoStateChanged;
 
         //===========================================================================
         //                                  METHODS
@@ -58,7 +58,7 @@ namespace UndoRedoFramework
         /// Stores an action as available for being undone, and executes it.
         /// </summary>
         /// <param name="action">Action to be executed and stored</param>
-        void RegisterAndDo( IAction action );
+        void RegisterAndDo( IUndoRedoAction action );
 
         /// <summary>
         /// Stores an action as available for being undone (without executing it).
@@ -68,7 +68,7 @@ namespace UndoRedoFramework
         /// have already been executed (e.g., observed).
         /// </remarks>
         /// <param name="action">Action to be stored</param>
-        void Register( IAction action );
+        void Register( IUndoRedoAction action );
 
         /// <summary>
         /// Un-executes the next action available for being undone, and makes it available for being redone.

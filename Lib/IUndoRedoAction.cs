@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2022 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 namespace UndoRedoFramework
@@ -7,7 +7,7 @@ namespace UndoRedoFramework
     /// <summary>
     /// Represents an action than can be executed (done/redone) and un-executed (undone).
     /// </summary>
-    public interface IAction
+    public interface IUndoRedoAction
     {
         //===========================================================================
         //                              PROPERTIES
@@ -41,6 +41,6 @@ namespace UndoRedoFramework
         /// </remarks>
         /// <param name="action">Action to be merged.</param>
         /// <returns><c>true</c> if the action was merged; <c>false</c> otherwise.</returns>
-        bool TryMerge( IAction action );
+        bool TryMerge( IUndoRedoAction action );
     }
 }

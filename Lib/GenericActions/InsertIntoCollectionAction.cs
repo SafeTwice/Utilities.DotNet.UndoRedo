@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.Collections;
@@ -9,7 +9,7 @@ namespace UndoRedoFramework.GenericActions
     /// <summary>
     /// Undo/Redo action for inserting items into a collection.
     /// </summary>
-    public class InsertIntoCollectionAction : IAction
+    public class InsertIntoCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
@@ -62,7 +62,7 @@ namespace UndoRedoFramework.GenericActions
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IAction action )
+        public bool TryMerge( IUndoRedoAction action )
         {
             if( ( action is InsertIntoCollectionAction updateAction ) &&
                 ( m_collectionManager == updateAction.m_collectionManager ) &&

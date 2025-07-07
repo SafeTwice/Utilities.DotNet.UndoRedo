@@ -1,5 +1,5 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2024 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 using System.Collections;
@@ -31,7 +31,7 @@ namespace UndoRedoFramework.Generators
         /// <param name="collection">Collection to observe.</param>
         /// <param name="descriptionGenerator">Function to generate the description of the actions.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
-        public ObservableCollectionActionGenerator( IObservableCollection collection, Func<IActionManager?> actionManagerProvider,
+        public ObservableCollectionActionGenerator( IObservableCollection collection, Func<IUndoRedoActionManager?> actionManagerProvider,
                                                     Func<NotifyCollectionChangedAction, string> descriptionGenerator,
                                                     TimeSpan? maxMergeTimeDiff = null )
         {
@@ -161,7 +161,7 @@ namespace UndoRedoFramework.Generators
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly Func<IActionManager?> m_actionManagerProvider;
+        private readonly Func<IUndoRedoActionManager?> m_actionManagerProvider;
         private readonly IObservableCollection m_collection;
 
         private readonly Func<NotifyCollectionChangedAction, string> m_descriptionGenerator;

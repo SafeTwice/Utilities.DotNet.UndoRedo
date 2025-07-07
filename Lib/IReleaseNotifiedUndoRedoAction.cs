@@ -1,13 +1,13 @@
 ﻿/// @file
-/// @copyright  Copyright (c) 2025 SafeTwice S.L. All rights reserved.
+/// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
 namespace UndoRedoFramework
 {
     /// <summary>
-    /// Represents an <see cref="IAction"/> than is notified when it is released from the undo/redo stack.
+    /// Represents an <see cref="IUndoRedoAction"/> than is notified when it is released from the undo/redo stack.
     /// </summary>
-    public interface IReleaseNotifiedAction : IAction
+    public interface IReleaseNotifiedUndoRedoAction : IUndoRedoAction
     {
         //===========================================================================
         //                               METHODS
