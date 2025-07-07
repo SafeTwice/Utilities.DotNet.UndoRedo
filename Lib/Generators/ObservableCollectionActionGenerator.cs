@@ -15,8 +15,8 @@ namespace UndoRedoFramework.Generators
     /// Generates Undo/Redo actions for an observable collection.
     /// </summary>
     /// <remarks>
-    /// When the observed collection changes, the generator creates the corresponding action:
-    /// <see cref="InsertIntoCollectionAction"/>, <see cref="RemoveFromCollectionAction"/> or <see cref="ReplaceInCollectionAction"/>.
+    /// When the observed collection changes, the generator creates the corresponding action for
+    /// inserting, removing, replacing, or moving items in the collection.
     /// </remarks>
     public class ObservableCollectionActionGenerator<T> : DisposableObject, ICollectionManager
     {
@@ -27,9 +27,20 @@ namespace UndoRedoFramework.Generators
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="actionManager">Manager for the actions.</param>
+        /// <remarks>
+        /// <para>
+        /// The <paramref name="actionManagerProvider"/> function is invoked when the observed collection changes
+        /// to provide the action manager that will handle the new generated action.
+        /// </para>
+        /// <para>
+        /// The <paramref name="descriptionGenerator"/> function is invoked when the observed collection changes
+        /// to generate the description of the new undo/redo action. It receives as parameter the 
+        /// <see cref="NotifyCollectionChangedAction"/> that indicates the type of change that happened.
+        /// </para>
+        /// </remarks>
         /// <param name="collection">Collection to observe.</param>
-        /// <param name="descriptionGenerator">Function to generate the description of the actions.</param>
+        /// <param name="actionManagerProvider">Delegate function that provides the action manager to handle the actions.</param>
+        /// <param name="descriptionGenerator">Delegate function to generate the description of the actions.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference to merge with another action.</param>
         public ObservableCollectionActionGenerator( IObservableCollection collection, Func<IUndoRedoActionManager?> actionManagerProvider,
                                                     Func<NotifyCollectionChangedAction, string> descriptionGenerator,

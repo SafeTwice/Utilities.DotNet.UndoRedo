@@ -4,11 +4,14 @@
 
 using System.Collections;
 
-namespace UndoRedoFramework.GeneratedActions
+namespace UndoRedoFramework.Generators
 {
     /// <summary>
     /// Represents an object that can manage a collection.
     /// </summary>
+    /// <remarks>
+    /// This interface is used internally by the library.
+    /// </remarks>
     public interface ICollectionManager
     {
         //===========================================================================

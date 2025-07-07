@@ -2,6 +2,8 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
+using UndoRedoFramework.Generators;
+
 namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
