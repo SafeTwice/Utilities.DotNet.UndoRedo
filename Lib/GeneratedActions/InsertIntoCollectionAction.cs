@@ -9,7 +9,7 @@ namespace UndoRedoFramework.GeneratedActions
     /// <summary>
     /// Undo/Redo action for inserting items into a collection.
     /// </summary>
-    public class InsertIntoCollectionAction : IUndoRedoAction
+    internal class InsertIntoCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES

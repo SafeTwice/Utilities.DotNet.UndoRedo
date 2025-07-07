@@ -7,7 +7,7 @@ namespace UndoRedoFramework.GeneratedActions
     /// <summary>
     /// Undo/Redo action for replacing items in a collection.
     /// </summary>
-    public class ReplaceInCollectionAction : IUndoRedoAction
+    internal class ReplaceInCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES

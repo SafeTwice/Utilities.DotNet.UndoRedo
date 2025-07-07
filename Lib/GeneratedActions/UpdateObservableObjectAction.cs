@@ -7,7 +7,7 @@ namespace UndoRedoFramework.GeneratedActions
     /// <summary>
     /// Undo/Redo action for the update of an observable property of an observable object.
     /// </summary>
-    public class UpdateObservableObjectAction : IUndoRedoAction
+    internal class UpdateObservableObjectAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES

@@ -9,7 +9,7 @@ namespace UndoRedoFramework.GeneratedActions
     /// <summary>
     /// Undo/Redo action removing items from a collection.
     /// </summary>
-    public class RemoveFromCollectionAction : IUndoRedoAction
+    internal class RemoveFromCollectionAction : IUndoRedoAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
