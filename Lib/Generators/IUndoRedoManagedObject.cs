@@ -7,9 +7,10 @@ using System.ComponentModel;
 namespace UndoRedoFramework.Generators
 {
     /// <summary>
-    /// Represents an object that can be observed for changes.
+    /// Represents an object which properties can be observed for changes and that can be 
+    /// manipulated to undo and redo those changes.
     /// </summary>
-    public interface IObservableObject : INotifyPropertyChanged
+    public interface IUndoRedoManagedObject : INotifyPropertyChanged
     {
         //===========================================================================
         //                                PROPERTIES

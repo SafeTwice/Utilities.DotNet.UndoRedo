@@ -4,14 +4,14 @@
 
 using Utilities.DotNet;
 
-namespace UndoRedoFramework.GeneratedActions
+namespace UndoRedoFramework.Generators
 {
 #pragma warning disable S1694 // This class is not an interface because interface methods cannot be internal.
 
     /// <summary>
-    /// Represents an object that can manage an observed property in an observable object.
+    /// Represents an object that can manage an observed property in a managed object.
     /// </summary>
-    public abstract class ObservableObjectManager : DisposableObject
+    public abstract class UndoRedoObjectManager : DisposableObject
     {
         //===========================================================================
         //                            INTERNAL METHODS
@@ -21,7 +21,7 @@ namespace UndoRedoFramework.GeneratedActions
         /// Sets the value of the observed property.
         /// </summary>
         /// <param name="value">The new value of the observed property.</param>
-        internal abstract void SetObservedPropertyValue( object? value );
+        internal abstract void SetManagedPropertyValue( object? value );
     }
 
 #pragma warning restore S1694

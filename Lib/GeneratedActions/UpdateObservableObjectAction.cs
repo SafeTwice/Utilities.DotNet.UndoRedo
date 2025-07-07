@@ -2,6 +2,8 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
+using UndoRedoFramework.Generators;
+
 namespace UndoRedoFramework.GeneratedActions
 {
     /// <summary>
@@ -23,13 +25,13 @@ namespace UndoRedoFramework.GeneratedActions
         /// <inheritdoc/>
         public void Do()
         {
-            m_objectManager.SetObservedPropertyValue( m_newValue );
+            m_objectManager.SetManagedPropertyValue( m_newValue );
         }
 
         /// <inheritdoc/>
         public void Undo()
         {
-            m_objectManager.SetObservedPropertyValue( m_oldValue );
+            m_objectManager.SetManagedPropertyValue( m_oldValue );
         }
 
         /// <inheritdoc/>
@@ -60,7 +62,7 @@ namespace UndoRedoFramework.GeneratedActions
         /// <param name="newValue">New value of the property being updated.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference between this action and the previous one to allow merging.</param>
-        internal UpdateObservableObjectAction( ObservableObjectManager objectManager, object? oldValue, object? newValue,
+        internal UpdateObservableObjectAction( UndoRedoObjectManager objectManager, object? oldValue, object? newValue,
                                                string description, TimeSpan maxMergeTimeDiff )
         {
             m_objectManager = objectManager;
@@ -78,7 +80,7 @@ namespace UndoRedoFramework.GeneratedActions
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly ObservableObjectManager m_objectManager;
+        private readonly UndoRedoObjectManager m_objectManager;
 
         private readonly object? m_oldValue;
         private object? m_newValue;
