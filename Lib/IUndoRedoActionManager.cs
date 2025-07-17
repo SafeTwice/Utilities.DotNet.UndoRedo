@@ -2,6 +2,7 @@
 /// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
+using System;
 using System.ComponentModel;
 
 namespace UndoRedoFramework

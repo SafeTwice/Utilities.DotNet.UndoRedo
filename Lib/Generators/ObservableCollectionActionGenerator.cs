@@ -2,6 +2,7 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
+using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -49,7 +50,7 @@ namespace UndoRedoFramework.Generators
             m_actionManagerProvider = actionManagerProvider;
             m_collection = collection;
             m_descriptionGenerator = descriptionGenerator;
-            m_maxMergeTimeDiff = maxMergeTimeDiff ?? DEFAULT_MAX_MERGE_TIME_DIFF;
+            m_maxMergeTimeDiff = maxMergeTimeDiff ?? Constants.DEFAULT_MAX_MERGE_TIME_DIFF;
 
             m_collection.CollectionChanged += OnCollectionChanged;
         }
@@ -163,12 +164,6 @@ namespace UndoRedoFramework.Generators
         }
 
         //===========================================================================
-        //                           PRIVATE CONSTANTS
-        //===========================================================================
-
-        private static readonly TimeSpan DEFAULT_MAX_MERGE_TIME_DIFF = TimeSpan.FromSeconds( 1 );
-
-        //===========================================================================
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
@@ -180,5 +175,10 @@ namespace UndoRedoFramework.Generators
         private readonly TimeSpan m_maxMergeTimeDiff;
 
         private bool m_ignoreEvents;
+    }
+
+    file static class Constants
+    {
+        internal static readonly TimeSpan DEFAULT_MAX_MERGE_TIME_DIFF = TimeSpan.FromSeconds( 1 );
     }
 }
