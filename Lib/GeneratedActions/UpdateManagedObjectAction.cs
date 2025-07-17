@@ -3,9 +3,9 @@
 /// @license    See LICENSE.txt
 
 using System;
-using UndoRedoFramework.Generators;
+using Utilities.DotNet.UndoRedo.Generators;
 
-namespace UndoRedoFramework.GeneratedActions
+namespace Utilities.DotNet.UndoRedo.GeneratedActions
 {
     /// <summary>
     /// Undo/Redo action for the update of an observable property of a managed object.

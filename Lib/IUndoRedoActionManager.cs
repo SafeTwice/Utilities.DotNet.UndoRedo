@@ -5,7 +5,7 @@
 using System;
 using System.ComponentModel;
 
-namespace UndoRedoFramework
+namespace Utilities.DotNet.UndoRedo
 {
     /// <summary>
     /// Interface for an undo/redo manager that can store actions available for being

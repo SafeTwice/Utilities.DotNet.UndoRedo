@@ -6,11 +6,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using UndoRedoFramework.GeneratedActions;
-using Utilities.DotNet;
 using Utilities.DotNet.Collections.Observables;
+using Utilities.DotNet.UndoRedo.GeneratedActions;
 
-namespace UndoRedoFramework.Generators
+namespace Utilities.DotNet.UndoRedo.Generators
 {
     /// <summary>
     /// Generates Undo/Redo actions for an observable collection.

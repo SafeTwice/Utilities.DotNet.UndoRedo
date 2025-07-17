@@ -4,9 +4,9 @@
 
 using System;
 using System.ComponentModel;
-using UndoRedoFramework.GeneratedActions;
+using Utilities.DotNet.UndoRedo.GeneratedActions;
 
-namespace UndoRedoFramework.Generators
+namespace Utilities.DotNet.UndoRedo.Generators
 {
     /// <summary>
     /// Generates Undo/Redo actions for an observed property in a managed object.

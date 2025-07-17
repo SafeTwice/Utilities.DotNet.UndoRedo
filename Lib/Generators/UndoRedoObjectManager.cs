@@ -2,9 +2,7 @@
 /// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-using Utilities.DotNet;
-
-namespace UndoRedoFramework.Generators
+namespace Utilities.DotNet.UndoRedo.Generators
 {
 #pragma warning disable S1694 // This class is not an interface because interface methods cannot be internal.
 

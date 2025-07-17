@@ -2,7 +2,7 @@
 /// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
 /// @license    See LICENSE.txt
 
-namespace UndoRedoFramework
+namespace Utilities.DotNet.UndoRedo
 {
     /// <summary>
     /// Represents an action than can be executed (done/redone) and un-executed (undone).

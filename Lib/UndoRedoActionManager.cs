@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Utilities.DotNet;
 
-namespace UndoRedoFramework
+namespace Utilities.DotNet.UndoRedo
 {
     /// <summary>
     /// Manages actions that can be done and undone.

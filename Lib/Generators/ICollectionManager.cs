@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace UndoRedoFramework.Generators
+namespace Utilities.DotNet.UndoRedo.Generators
 {
     /// <summary>
     /// Represents an object that can manage a collection.
