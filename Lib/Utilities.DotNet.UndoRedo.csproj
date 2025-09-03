@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Utilities.DotNet" Version="1.5.0-rc1" />
+    <PackageReference Include="Utilities.DotNet" Version="1.5.0-rc4" />
     <PackageReference Include="Utilities.DotNet.Collections" Version="1.5.0-rc2" />
   </ItemGroup>
 
