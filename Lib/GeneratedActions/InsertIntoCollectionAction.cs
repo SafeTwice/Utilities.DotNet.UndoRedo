@@ -44,7 +44,7 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
             Description = description;
 
             m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.Now;
+            m_time = DateTime.UtcNow;
         }
 
         //===========================================================================
