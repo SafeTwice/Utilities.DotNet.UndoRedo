@@ -1,6 +1,6 @@
-﻿/// @file
-/// @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
-/// @license    See LICENSE.txt
+﻿//! @file
+//! @copyright  Copyright (c) 2022-2025 SafeTwice S.L. All rights reserved.
+//! @license    See LICENSE.txt
 
 namespace Utilities.DotNet.UndoRedo
 {
@@ -14,7 +14,7 @@ namespace Utilities.DotNet.UndoRedo
         //===========================================================================
 
         /// <summary>
-        /// Description of the action (or <c>null</c> if no description is available).
+        /// Description of the action.
         /// </summary>
         string Description { get; }
 

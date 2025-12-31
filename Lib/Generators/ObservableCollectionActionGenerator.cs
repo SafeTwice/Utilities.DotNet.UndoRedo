@@ -1,6 +1,6 @@
-﻿/// @file
-/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
-/// @license    See LICENSE.txt
+﻿//! @file
+//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @license    See LICENSE.txt
 
 using System;
 using System.Collections;
@@ -58,6 +58,7 @@ namespace Utilities.DotNet.UndoRedo.Generators
         //                            PUBLIC METHODS
         //===========================================================================
 
+        /// <inheritdoc/>
         public void InsertItems( IList items, int insertionIndex )
         {
             m_ignoreEvents = true;
@@ -72,6 +73,7 @@ namespace Utilities.DotNet.UndoRedo.Generators
             }
         }
 
+        /// <inheritdoc/>
         public void RemoveItems( IList items )
         {
             m_ignoreEvents = true;
@@ -86,6 +88,7 @@ namespace Utilities.DotNet.UndoRedo.Generators
             }
         }
 
+        /// <inheritdoc/>
         public void ReplaceItem( object oldItem, object newItem )
         {
             m_ignoreEvents = true;
@@ -100,12 +103,14 @@ namespace Utilities.DotNet.UndoRedo.Generators
             }
         }
 
+        /// <inheritdoc/>
         public void MoveItem( int oldIndex, int newIndex ) => throw new NotImplementedException();
 
         //===========================================================================
         //                            PROTECTED METHODS
         //===========================================================================
 
+        /// <inheritdoc/>
         protected override void Dispose( bool disposing )
         {
             m_collection.CollectionChanged -= OnCollectionChanged;

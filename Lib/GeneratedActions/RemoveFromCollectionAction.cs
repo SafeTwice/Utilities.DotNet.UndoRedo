@@ -1,6 +1,6 @@
-﻿/// @file
-/// @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
-/// @license    See LICENSE.txt
+﻿//! @file
+//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @license    See LICENSE.txt
 
 using System;
 using System.Collections;
