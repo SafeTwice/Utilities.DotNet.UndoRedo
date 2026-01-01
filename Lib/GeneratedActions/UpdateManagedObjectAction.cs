@@ -1,5 +1,5 @@
 ﻿//! @file
-//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @copyright  Copyright (c) 2026 SafeTwice S.L. All rights reserved.
 //! @license    See LICENSE.txt
 
 using System;
@@ -63,7 +63,7 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         /// <param name="newValue">New value of the property being updated.</param>
         /// <param name="description">Description of the action.</param>
         /// <param name="maxMergeTimeDiff">Maximum time difference between this action and the previous one to allow merging.</param>
-        internal UpdateManagedObjectAction( UndoRedoObjectManager objectManager, object? oldValue, object? newValue,
+        internal UpdateManagedObjectAction( IUndoRedoObjectManager objectManager, object? oldValue, object? newValue,
                                             string description, TimeSpan maxMergeTimeDiff )
         {
             m_objectManager = objectManager;
@@ -81,7 +81,7 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         //                           PRIVATE ATTRIBUTES
         //===========================================================================
 
-        private readonly UndoRedoObjectManager m_objectManager;
+        private readonly IUndoRedoObjectManager m_objectManager;
 
         private readonly object? m_oldValue;
         private object? m_newValue;
