@@ -10,45 +10,50 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
     /// <summary>
     /// Undo/Redo action for the update of an observable property of a managed object.
     /// </summary>
-    internal class UpdateManagedObjectAction : IUndoRedoAction
+    internal class UpdateManagedObjectAction : UndoRedoMergeableAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
         /// <inheritdoc/>
-        public string Description { get; }
+        public override string Description => m_description;
 
         //===========================================================================
         //                            PUBLIC METHODS
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Do()
+        public override void Do()
         {
             m_objectManager.SetManagedPropertyValue( m_newValue );
         }
 
         /// <inheritdoc/>
-        public void Undo()
+        public override void Undo()
         {
             m_objectManager.SetManagedPropertyValue( m_oldValue );
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IUndoRedoAction action )
+        public override bool TryMerge( IUndoRedoAction newAction )
         {
-            if( ( action is UpdateManagedObjectAction updateAction ) &&
-                ( updateAction.m_objectManager == m_objectManager ) &&
-                ( updateAction.m_oldValue == m_newValue ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
+            if( ( newAction is UpdateManagedObjectAction newUpdateAction ) &&
+                ( newUpdateAction.m_objectManager == m_objectManager ) &&
+                Equals( newUpdateAction.m_oldValue, m_newValue ) &&
+                !Equals( m_oldValue, newUpdateAction.m_newValue ) && // Avoid merging when creating a no-op action.
+                CanMerge( newUpdateAction ) )
             {
-                m_newValue = updateAction.m_newValue;
-                m_time = updateAction.m_time;
+                m_newValue = newUpdateAction.m_newValue;
+                m_description = newUpdateAction.m_description;
+                Time = newUpdateAction.Time;
+
                 return true;
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         //===========================================================================
@@ -71,11 +76,17 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
             m_oldValue = oldValue;
             m_newValue = newValue;
 
-            Description = description;
+            m_description = description;
 
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.UtcNow;
+            MaxMergeTimeDiff = maxMergeTimeDiff;
         }
+
+        //===========================================================================
+        //                           PROTECTED PROPERTIES
+        //===========================================================================
+
+        /// <inheritdoc/>
+        protected override TimeSpan MaxMergeTimeDiff { get; }
 
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
@@ -86,8 +97,6 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         private readonly object? m_oldValue;
         private object? m_newValue;
 
-        private readonly TimeSpan m_maxMergeTimeDiff;
-
-        private DateTime m_time;
+        private string m_description;
     }
 }

@@ -1,9 +1,10 @@
 ﻿//! @file
-//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @copyright  Copyright (c) 2026 SafeTwice S.L. All rights reserved.
 //! @license    See LICENSE.txt
 
 using System;
 using System.Collections;
+using System.Linq;
 using Utilities.DotNet.UndoRedo.Generators;
 
 namespace Utilities.DotNet.UndoRedo.GeneratedActions
@@ -11,15 +12,14 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
     /// <summary>
     /// Undo/Redo action for inserting items into a collection.
     /// </summary>
-    internal class InsertIntoCollectionAction : IUndoRedoAction
+    internal class InsertIntoCollectionAction : UndoRedoMergeableAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
         /// <inheritdoc/>
-        public string Description { get; }
-
+        public override string Description => m_description;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -38,13 +38,12 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         {
             m_collectionManager = collectionManager;
 
-            m_insertedItems = insertedItems;
+            m_insertedItems = insertedItems.Cast<object>().ToList();
             m_insertionIndex = insertionIndex;
 
-            Description = description;
+            m_description = description;
 
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.UtcNow;
+            MaxMergeTimeDiff = maxMergeTimeDiff;
         }
 
         //===========================================================================
@@ -52,36 +51,33 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Do()
+        public override void Do()
         {
             m_collectionManager.InsertItems( m_insertedItems, m_insertionIndex );
         }
 
         /// <inheritdoc/>
-        public void Undo()
+        public override void Undo()
         {
             m_collectionManager.RemoveItems( m_insertedItems );
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IUndoRedoAction action )
+        public override bool TryMerge( IUndoRedoAction newAction )
         {
-            if( ( action is InsertIntoCollectionAction updateAction ) &&
-                ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
+            if( ( newAction is InsertIntoCollectionAction newInsertAction ) &&
+                ( m_collectionManager == newInsertAction.m_collectionManager ) &&
+                ( newInsertAction.m_insertionIndex == ( m_insertionIndex + m_insertedItems.Count ) ) &&
+                CanMerge( newInsertAction ) )
             {
-                if( ( ( m_insertionIndex > 0 ) || ( updateAction.m_insertionIndex > 0 ) ) &&
-                    ( updateAction.m_insertionIndex != ( m_insertionIndex + m_insertedItems.Count ) ) )
-                {
-                    return false;
-                }
-
-                foreach( object item in updateAction.m_insertedItems )
+                foreach( object item in newInsertAction.m_insertedItems )
                 {
                     m_insertedItems.Add( item );
                 }
 
-                m_time = updateAction.m_time;
+                m_description = newInsertAction.m_description;
+                Time = newInsertAction.Time;
+
                 return true;
             }
             else
@@ -89,6 +85,13 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
                 return false;
             }
         }
+
+        //===========================================================================
+        //                           PROTECTED PROPERTIES
+        //===========================================================================
+
+        /// <inheritdoc/>
+        protected override TimeSpan MaxMergeTimeDiff { get; }
 
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
@@ -99,7 +102,6 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         private readonly IList m_insertedItems;
         private readonly int m_insertionIndex;
 
-        private readonly TimeSpan m_maxMergeTimeDiff;
-        private DateTime m_time;
+        private string m_description;
     }
 }

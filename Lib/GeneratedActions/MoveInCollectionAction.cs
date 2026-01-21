@@ -1,5 +1,5 @@
 ﻿//! @file
-//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @copyright  Copyright (c) 2026 SafeTwice S.L. All rights reserved.
 //! @license    See LICENSE.txt
 
 using System;
@@ -10,14 +10,14 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
     /// <summary>
     /// Undo/Redo action for moving items in a collection.
     /// </summary>
-    internal class MoveInCollectionAction : IUndoRedoAction
+    internal class MoveInCollectionAction : UndoRedoMergeableAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
         /// <inheritdoc/>
-        public string Description { get; }
+        public override string Description => m_description;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -39,10 +39,9 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
             m_oldIndex = oldIndex;
             m_newIndex = newIndex;
 
-            Description = description;
+            m_description = description;
 
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.UtcNow;
+            MaxMergeTimeDiff = maxMergeTimeDiff;
         }
 
         //===========================================================================
@@ -50,29 +49,30 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Do()
+        public override void Do()
         {
             m_collectionManager.MoveItem( m_oldIndex, m_newIndex );
         }
 
         /// <inheritdoc/>
-        public void Undo()
+        public override void Undo()
         {
             m_collectionManager.MoveItem( m_newIndex, m_oldIndex );
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IUndoRedoAction action )
+        public override bool TryMerge( IUndoRedoAction newAction )
         {
-            if( ( action is MoveInCollectionAction updateAction ) &&
-                ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) &&
-                ( m_newIndex == updateAction.m_oldIndex ) &&
-                ( m_oldIndex != updateAction.m_newIndex ) ) // Avoid having a "do nothing" action
+            if( ( newAction is MoveInCollectionAction newMoveAction ) &&
+                ( m_collectionManager == newMoveAction.m_collectionManager ) &&
+                ( m_newIndex == newMoveAction.m_oldIndex ) &&
+                ( m_oldIndex != newMoveAction.m_newIndex ) && // Avoid merging when creating a no-op action.
+                CanMerge( newMoveAction ) )
             {
-                m_newIndex = updateAction.m_newIndex;
+                m_newIndex = newMoveAction.m_newIndex;
+                m_description = newMoveAction.m_description;
+                Time = newMoveAction.Time;
 
-                m_time = updateAction.m_time;
                 return true;
             }
             else
@@ -80,6 +80,13 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
                 return false;
             }
         }
+
+        //===========================================================================
+        //                           PROTECTED PROPERTIES
+        //===========================================================================
+
+        /// <inheritdoc/>
+        protected override TimeSpan MaxMergeTimeDiff { get; }
 
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
@@ -90,7 +97,6 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         private readonly int m_oldIndex;
         private int m_newIndex;
 
-        private readonly TimeSpan m_maxMergeTimeDiff;
-        private DateTime m_time;
+        private string m_description;
     }
 }

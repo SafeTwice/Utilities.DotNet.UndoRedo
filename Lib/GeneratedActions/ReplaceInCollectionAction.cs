@@ -1,5 +1,5 @@
 ﻿//! @file
-//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @copyright  Copyright (c) 2026 SafeTwice S.L. All rights reserved.
 //! @license    See LICENSE.txt
 
 using System;
@@ -10,14 +10,14 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
     /// <summary>
     /// Undo/Redo action for replacing items in a collection.
     /// </summary>
-    internal class ReplaceInCollectionAction : IUndoRedoAction
+    internal class ReplaceInCollectionAction : UndoRedoMergeableAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
         /// <inheritdoc/>
-        public string Description { get; }
+        public override string Description => m_description;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -39,10 +39,9 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
             m_oldItem = oldItem;
             m_newItem = newItem;
 
-            Description = description;
+            m_description = description;
 
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.UtcNow;
+            MaxMergeTimeDiff = maxMergeTimeDiff;
         }
 
         //===========================================================================
@@ -50,28 +49,30 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Do()
+        public override void Do()
         {
             m_collectionManager.ReplaceItem( m_oldItem, m_newItem );
         }
 
         /// <inheritdoc/>
-        public void Undo()
+        public override void Undo()
         {
             m_collectionManager.ReplaceItem( m_newItem, m_oldItem );
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IUndoRedoAction action )
+        public override bool TryMerge( IUndoRedoAction newAction )
         {
-            if( ( action is ReplaceInCollectionAction updateAction ) &&
-                ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) &&
-                ( m_newItem == updateAction.m_oldItem ) )
+            if( ( newAction is ReplaceInCollectionAction newReplaceAction ) &&
+                ( m_collectionManager == newReplaceAction.m_collectionManager ) &&
+                Equals( m_newItem, newReplaceAction.m_oldItem ) &&
+                !Equals( m_oldItem, newReplaceAction.m_newItem ) && // Avoid merging when creating a no-op action.
+                CanMerge( newReplaceAction ) )
             {
-                m_newItem = updateAction.m_newItem;
+                m_newItem = newReplaceAction.m_newItem;
+                m_description = newReplaceAction.m_description;
+                Time = newReplaceAction.Time;
 
-                m_time = updateAction.m_time;
                 return true;
             }
             else
@@ -79,6 +80,13 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
                 return false;
             }
         }
+
+        //===========================================================================
+        //                           PROTECTED PROPERTIES
+        //===========================================================================
+
+        /// <inheritdoc/>
+        protected override TimeSpan MaxMergeTimeDiff { get; }
 
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
@@ -89,7 +97,6 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         private readonly object m_oldItem;
         private object m_newItem;
 
-        private readonly TimeSpan m_maxMergeTimeDiff;
-        private DateTime m_time;
+        private string m_description;
     }
 }

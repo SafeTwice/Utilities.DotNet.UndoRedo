@@ -82,19 +82,18 @@ namespace Utilities.DotNet.UndoRedo
         /// <inheritdoc/>
         public void Register( IUndoRedoAction action )
         {
-            bool currentCanRedo = CanRedo;
+            var currentCanRedo = CanRedo;
+            var merged = false;
 
-            if( m_undoActions.Last?.Value.TryMerge( action ) != true )
+            if( m_undoActions.Last?.Value is IUndoRedoMergeableAction lastAction )
+            {
+                merged = lastAction.TryMerge( action );
+            }
+
+            if( !merged )
             {
                 m_undoActions.AddLast( action );
-
-                if( m_undoActions.Count > m_maxActions )
-                {
-                    var firstAction = m_undoActions.First?.Value as IReleaseNotifiedUndoRedoAction;
-                    firstAction?.OnReleased( true );
-
-                    m_undoActions.RemoveFirst();
-                }
+                PurgeUndoActions();
             }
 
             ClearRedoActions();
@@ -144,6 +143,17 @@ namespace Utilities.DotNet.UndoRedo
         //===========================================================================
         //                            PRIVATE METHODS
         //===========================================================================
+
+        private void PurgeUndoActions()
+        {
+            if( m_undoActions.Count > m_maxActions )
+            {
+                var firstAction = m_undoActions.First?.Value as IReleaseNotifiedUndoRedoAction;
+                firstAction?.OnReleased( true );
+
+                m_undoActions.RemoveFirst();
+            }
+        }
 
         private void CleanUndoActions()
         {

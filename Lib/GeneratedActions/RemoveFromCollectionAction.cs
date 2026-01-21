@@ -1,5 +1,5 @@
 ﻿//! @file
-//! @copyright  Copyright (c) 2024-2025 SafeTwice S.L. All rights reserved.
+//! @copyright  Copyright (c) 2026 SafeTwice S.L. All rights reserved.
 //! @license    See LICENSE.txt
 
 using System;
@@ -11,14 +11,14 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
     /// <summary>
     /// Undo/Redo action removing items from a collection.
     /// </summary>
-    internal class RemoveFromCollectionAction : IUndoRedoAction
+    internal class RemoveFromCollectionAction : UndoRedoMergeableAction
     {
         //===========================================================================
         //                           PUBLIC PROPERTIES
         //===========================================================================
 
         /// <inheritdoc/>
-        public string Description { get; }
+        public override string Description => m_description;
 
         //===========================================================================
         //                          PUBLIC CONSTRUCTORS
@@ -40,10 +40,9 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
             m_removedItems = removedItems;
             m_deletionIndex = deletionIndex;
 
-            Description = description;
+            m_description = description;
 
-            m_maxMergeTimeDiff = maxMergeTimeDiff;
-            m_time = DateTime.UtcNow;
+            MaxMergeTimeDiff = maxMergeTimeDiff;
         }
 
         //===========================================================================
@@ -51,36 +50,33 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         //===========================================================================
 
         /// <inheritdoc/>
-        public void Do()
+        public override void Do()
         {
             m_collectionManager.RemoveItems( m_removedItems );
         }
 
         /// <inheritdoc/>
-        public void Undo()
+        public override void Undo()
         {
             m_collectionManager.InsertItems( m_removedItems, m_deletionIndex );
         }
 
         /// <inheritdoc/>
-        public bool TryMerge( IUndoRedoAction action )
+        public override bool TryMerge( IUndoRedoAction newAction )
         {
-            if( ( action is RemoveFromCollectionAction updateAction ) &&
-                ( m_collectionManager == updateAction.m_collectionManager ) &&
-                ( ( updateAction.m_time - m_time ) < m_maxMergeTimeDiff ) )
+            if( ( newAction is RemoveFromCollectionAction newRemoveAction ) &&
+                ( m_collectionManager == newRemoveAction.m_collectionManager ) &&
+                ( newRemoveAction.m_deletionIndex == m_deletionIndex ) &&
+                CanMerge( newRemoveAction ) )
             {
-                if( ( ( m_deletionIndex > 0 ) || ( updateAction.m_deletionIndex > 0 ) ) &&
-                    ( updateAction.m_deletionIndex != m_deletionIndex ) )
-                {
-                    return false;
-                }
-
-                foreach( object item in updateAction.m_removedItems )
+                foreach( object item in newRemoveAction.m_removedItems )
                 {
                     m_removedItems.Add( item );
                 }
 
-                m_time = updateAction.m_time;
+                m_description = newRemoveAction.m_description;
+                Time = newRemoveAction.Time;
+
                 return true;
             }
             else
@@ -88,6 +84,13 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
                 return false;
             }
         }
+
+        //===========================================================================
+        //                           PROTECTED PROPERTIES
+        //===========================================================================
+
+        /// <inheritdoc/>
+        protected override TimeSpan MaxMergeTimeDiff { get; }
 
         //===========================================================================
         //                           PRIVATE ATTRIBUTES
@@ -98,7 +101,6 @@ namespace Utilities.DotNet.UndoRedo.GeneratedActions
         private readonly IList m_removedItems;
         private readonly int m_deletionIndex;
 
-        private readonly TimeSpan m_maxMergeTimeDiff;
-        private DateTime m_time;
+        private string m_description;
     }
 }
