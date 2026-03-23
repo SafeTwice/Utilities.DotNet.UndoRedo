@@ -21,8 +21,8 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
-    <Version>1.0-rc.2</Version>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <Version>1.0-rc.3</Version>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_EVENT_NAME)' == 'release'">
