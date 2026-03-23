@@ -21,8 +21,8 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
-    <Version>1.0-rc.1</Version>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <Version>1.0-rc.2</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_EVENT_NAME)' == 'release'">
@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Utilities.DotNet" Version="1.5.0-rc.8" />
+    <PackageReference Include="Utilities.DotNet" Version="1.5.0-rc.9" />
     <PackageReference Include="Utilities.DotNet.Collections" Version="1.5.0-rc.2" />
   </ItemGroup>
 

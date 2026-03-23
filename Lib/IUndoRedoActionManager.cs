@@ -80,5 +80,10 @@ namespace Utilities.DotNet.UndoRedo
         /// Re-executes the next action available for being redone, and makes it available for being undone.
         /// </summary>
         void Redo();
+
+        /// <summary>
+        /// Removes all actions available for being undone and redone, and resets the manager state.
+        /// </summary>
+        void Clear();
     }
 }

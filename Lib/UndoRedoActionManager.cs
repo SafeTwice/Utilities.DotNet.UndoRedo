@@ -134,6 +134,14 @@ namespace Utilities.DotNet.UndoRedo
         }
 
         /// <inheritdoc/>
+        public void Clear()
+        {
+            CleanUndoActions();
+            ClearRedoActions();
+            InvokeUpdateEvents( true );
+        }
+
+        /// <inheritdoc/>
         public void Dispose()
         {
             CleanUndoActions();
